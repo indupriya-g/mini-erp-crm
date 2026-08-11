@@ -1,0 +1,280 @@
+{
+  "info": {
+    "name": "Mini ERP + CRM Operations Portal",
+    "description": "API collection for the Mini ERP + CRM Operations Portal case study. Includes success and failure test cases for Auth, Customers, Products, and Challans.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "customerId", "value": "1", "type": "string" },
+    { "key": "productId", "value": "1", "type": "string" },
+    { "key": "challanId", "value": "1", "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login - Success (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@test.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login - Failure (Wrong Password)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@test.com\",\n  \"password\": \"wrongpassword\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login - Failure (Missing Fields)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@test.com\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "List Customers",
+          "request": { "method": "GET", "url": "{{baseUrl}}/customers?page=1&limit=20" }
+        },
+        {
+          "name": "Search Customers",
+          "request": { "method": "GET", "url": "{{baseUrl}}/customers?search=ramesh" }
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/customers/{{customerId}}" }
+        },
+        {
+          "name": "Create Customer - Success",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/customers",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ramesh Traders\",\n  \"mobile\": \"9876543210\",\n  \"email\": \"ramesh@example.com\",\n  \"customerType\": \"WHOLESALE\",\n  \"address\": \"MG Road, Bangalore\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Customer - Failure (Missing Required Fields)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/customers",
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Missing Fields Test\"\n}" }
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/customers/{{customerId}}",
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"ACTIVE\"\n}" }
+          }
+        },
+        {
+          "name": "Add Follow-up Note - Success",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/customers/{{customerId}}/follow-ups",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Called customer, interested in bulk order next week\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Add Follow-up Note - Failure (Empty Note)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/customers/{{customerId}}/follow-ups",
+            "body": { "mode": "raw", "raw": "{\n  \"note\": \"\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "List Products",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products?page=1&limit=20" }
+        },
+        {
+          "name": "List Low Stock Products",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products?lowStock=true" }
+        },
+        {
+          "name": "Create Product - Success",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Steel Pipe 2 inch\",\n  \"sku\": \"PIPE-2IN\",\n  \"category\": \"Plumbing\",\n  \"unitPrice\": 250,\n  \"minStockAlert\": 10,\n  \"location\": \"Warehouse A\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Product - Failure (Duplicate SKU)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Steel Pipe 2 inch\",\n  \"sku\": \"PIPE-2IN\",\n  \"unitPrice\": 250\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/products/{{productId}}",
+            "body": { "mode": "raw", "raw": "{\n  \"unitPrice\": 275\n}" }
+          }
+        },
+        {
+          "name": "Get Stock Movements",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products/{{productId}}/stock-movements" }
+        },
+        {
+          "name": "Stock IN - Success",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/products/{{productId}}/stock-movements",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 50,\n  \"type\": \"IN\",\n  \"reason\": \"Initial stock from supplier\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Stock OUT - Failure (Insufficient Stock)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/products/{{productId}}/stock-movements",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 999,\n  \"type\": \"OUT\",\n  \"reason\": \"Testing overdraw\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Challans",
+      "item": [
+        {
+          "name": "List Challans",
+          "request": { "method": "GET", "url": "{{baseUrl}}/challans?page=1&limit=20" }
+        },
+        {
+          "name": "Filter Challans by Status",
+          "request": { "method": "GET", "url": "{{baseUrl}}/challans?status=CONFIRMED" }
+        },
+        {
+          "name": "Get Challan by ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/challans/{{challanId}}" }
+        },
+        {
+          "name": "Create Draft Challan - Success",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/challans",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": {{customerId}},\n  \"status\": \"DRAFT\",\n  \"items\": [\n    { \"productId\": {{productId}}, \"quantity\": 3 }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Confirmed Challan - Success",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/challans",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": {{customerId}},\n  \"status\": \"CONFIRMED\",\n  \"items\": [\n    { \"productId\": {{productId}}, \"quantity\": 2 }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Confirmed Challan - Failure (Insufficient Stock)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/challans",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": {{customerId}},\n  \"status\": \"CONFIRMED\",\n  \"items\": [\n    { \"productId\": {{productId}}, \"quantity\": 999 }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Challan - Failure (Missing Items)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/challans",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": {{customerId}},\n  \"status\": \"DRAFT\",\n  \"items\": []\n}"
+            }
+          }
+        },
+        {
+          "name": "Confirm Draft Challan - Success",
+          "request": { "method": "PUT", "url": "{{baseUrl}}/challans/{{challanId}}/confirm" }
+        },
+        {
+          "name": "Confirm Draft Challan - Failure (Already Confirmed)",
+          "request": { "method": "PUT", "url": "{{baseUrl}}/challans/{{challanId}}/confirm" }
+        }
+      ]
+    },
+    {
+      "name": "Health / DB Check",
+      "item": [
+        { "name": "Health Check", "request": { "method": "GET", "url": "{{baseUrl}}/health" } },
+        { "name": "DB Connection Test", "request": { "method": "GET", "url": "{{baseUrl}}/db-test" } }
+      ]
+    }
+  ]
+}
