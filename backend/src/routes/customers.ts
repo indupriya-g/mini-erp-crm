@@ -84,7 +84,7 @@ router.get("/", async (req: AuthRequest, res: Response) => {
 // Get one customer including follow-ups
 router.get("/:id", async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id), 10);
 
     if (isNaN(id)) {
       return res.status(400).json({
@@ -176,7 +176,7 @@ router.post("/", async (req: AuthRequest, res: Response) => {
 // Update a customer
 router.put("/:id", async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id), 10);
 
     if (isNaN(id)) {
       return res.status(400).json({
@@ -235,7 +235,7 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
 // Add a follow-up note
 router.post("/:id/follow-ups", async (req: AuthRequest, res: Response) => {
   try {
-    const customerId = parseInt(req.params.id);
+    const customerId = parseInt(String(req.params.id), 10);
     const { note } = req.body;
 
     if (isNaN(customerId)) {

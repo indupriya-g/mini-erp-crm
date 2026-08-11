@@ -34,16 +34,19 @@ export function authMiddleware(
       });
     }
 
-    const token = parts[1];
+const token = req.headers.authorization?.split(" ")[1];
 
+if (!token) {
+  return res.status(401).json({ message: "Authentication token required" });
+}
     // Verify the JWT
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET as string
-    ) as {
-      userId: number;
-      role: string;
-    };
+   const decoded = jwt.verify(
+  token,
+  process.env.JWT_SECRET!
+) as unknown as {
+  userId: number;
+  role: string;
+};
 
     // Attach decoded user information to request
     req.user = {

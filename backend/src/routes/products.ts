@@ -52,8 +52,7 @@ router.get("/", async (req: AuthRequest, res: Response) => {
 // GET /products/:id/stock-movements
 router.get("/:id/stock-movements", async (req: AuthRequest, res: Response) => {
   try {
-    const productId = parseInt(req.params.id);
-
+const productId = parseInt(String(req.params.id), 10);
     const movements = await prisma.stockMovement.findMany({
       where: { productId },
       orderBy: { createdAt: "desc" },
@@ -100,7 +99,7 @@ router.post("/", async (req: AuthRequest, res: Response) => {
 // PUT /products/:id  (edit product)
 router.put("/:id", async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+const id = parseInt(String(req.params.id), 10);
     const { name, category, unitPrice, minStockAlert, location } = req.body;
 
     const product = await prisma.product.update({
@@ -123,8 +122,7 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
 // POST /products/:id/stock-movements  (manual stock IN/OUT, e.g. restock)
 router.post("/:id/stock-movements", async (req: AuthRequest, res: Response) => {
   try {
-    const productId = parseInt(req.params.id);
-    const { quantity, type, reason } = req.body;
+const productId = parseInt(String(req.params.id), 10);    const { quantity, type, reason } = req.body;
 
     if (!quantity || !type || !reason) {
       return res.status(400).json({ message: "quantity, type, and reason are required" });

@@ -40,7 +40,7 @@ router.get("/", async (req: AuthRequest, res: Response) => {
 // GET /challans/:id
 router.get("/:id", async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id), 10);
     const challan = await prisma.challan.findUnique({
       where: { id },
       include: { customer: true, items: true },
@@ -194,7 +194,7 @@ router.post("/", async (req: AuthRequest, res: Response) => {
 // PUT /challans/:id/confirm  (confirm a DRAFT challan)
 router.put("/:id/confirm", async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id), 10);
 
     const challan = await prisma.challan.findUnique({
       where: { id },
