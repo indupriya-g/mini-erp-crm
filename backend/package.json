@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-      "seed": "ts-node-dev --transpile-only src/seed.ts"
-
-  },
+  "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+  "seed": "ts-node-dev --transpile-only src/seed.ts",
+  "build": "tsc",
+  "start": "node dist/server.js"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
